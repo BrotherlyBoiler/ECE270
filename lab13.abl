@@ -390,7 +390,7 @@ LED16 = !run.q;  " jumbo red -> computer halted
 
 " program counter
 
-PC := ____________________________________;
+PC := PCC & (PC + 1) # PCC & PC;
 PC.ar = start;
 PC.clk = cpuclk;
 
