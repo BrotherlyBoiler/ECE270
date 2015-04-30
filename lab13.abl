@@ -390,24 +390,24 @@ LED16 = !run.q;  " jumbo red -> computer halted
 
 " program counter
 
-PC := PCC & (PC + 1) # PCC & PC;
+PC := pcc & (PC + 1) # pcc & PC;
 PC.ar = start;
 PC.clk = cpuclk;
 
 " instruction register
 
-IR := ____________________________________;
+IR := irl & DB # !irl & IR;
 IR.ar = start;
 IR.clk = cpuclk;
 [LED14..LED8] = IR;
 
 " arithmetic logic unit - control signals
 
-ale = ____________________________________;
+ale = sq & (LDA # ADD # SUB # AND # INA);
 
-alx = ____________________________________;
+alx = sq & (LDA # AND);
 
-aly = ____________________________________;
+aly = sq & (SUB # LDA);
 
 " arithmetic logic unit - CLA
 
@@ -433,7 +433,7 @@ S3 = C2$P3;
 
 " arithmetic logic unit - condition code register
 
-CF.d = _______________________________________________;
+CF.d = (!ale & CF.q) # (ale & (!alx&!aly&CF.q) # (ale&!alx) & (aly$C3) # (!ale#alx) & CF.q);
 CF.clk = cpuclk;
 CF.ar = start;
 
