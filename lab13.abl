@@ -433,19 +433,19 @@ S3 = C2$P3;
 
 " arithmetic logic unit - condition code register
 
-CF.d = (!ale & CF.q) # (ale & (!alx&!aly&CF.q) # (ale&!alx) & (aly$C3) # (!ale#alx) & CF.q);
+CF.d = (!ale & CF.q) # (ale & (!alx & (C3 $ CIN) # alx & CF.q));
 CF.clk = cpuclk;
 CF.ar = start;
 
-ZF.d = _______________________________________________;
+ZF.d = !ale & ZF.q # ale & (!alu3 & !alu2 & !alu1 & !alu0);
 ZF.clk = cpuclk;
 ZF.ar = start;
 
-NF.d = _______________________________________________;
+NF.d = !ale & NF.q # ale & alu3;
 NF.clk = cpuclk;
 NF.ar = start;
 
-VF.d = _______________________________________________;
+VF.d = (!ale & VF.q) # (ale & !alx) & (C3 $ C2) # (alx & !ale) & VF.q;
 VF.clk = cpuclk;
 VF.ar = start;
 
@@ -453,11 +453,11 @@ VF.ar = start;
 
 " ALU combinational outputs
 
-ALU = ________________________________________________;
+ALU = (LDA&[db3..db0]) # (AND & (AREG&[db3..db0])) # ((ADD#SUB) & SUM);
 
 " accumulator (A) register
 
-AREG := ______________________________________________;
+AREG := (ale & ALU) # (!ale & AREG) & !INA # INA&[DIP3..DIP0];
 AREG.clk = cpuclk;
 AREG.ar = start;
 
@@ -544,4 +544,3 @@ truth_table([pc3,pc2,pc1,pc0]->[DIS4a, DIS4b, DIS4c, DIS4d, DIS4e, DIS4f, DIS4g]
             [ 1, 1, 1, 1]->[1,0,0,0,1,1,1];
 
 END
-
